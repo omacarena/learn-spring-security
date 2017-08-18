@@ -13,8 +13,6 @@ public class LssSecurityConfig extends WebSecurityConfigurerAdapter {
         super();
     }
 
-    //
-
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception { // @formatter:off 
         auth.
@@ -26,13 +24,13 @@ public class LssSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception { // @formatter:off
         http
-        .authorizeRequests()
-                .antMatchers("/delete/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-        
+        .authorizeRequests().anyRequest().authenticated()
         .and()
         .formLogin()
-        ;
+        	// serve login at location + permit any access on it
+        	.loginPage("/login").permitAll()
+        	// action which will process the login page
+        	.loginProcessingUrl("/doLogin");
+        
     } // @formatter:on
-
 }
