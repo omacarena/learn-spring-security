@@ -5,15 +5,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 public class LssSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    public LssSecurityConfig() {
-        super();
-    }
-
-    //
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception { // @formatter:off 
@@ -34,9 +29,24 @@ public class LssSecurityConfig extends WebSecurityConfigurerAdapter {
             loginPage("/login").permitAll().
             loginProcessingUrl("/doLogin")
             
+        // enable logout and permit
+        .and().logout().permitAll()
+        	// specify only logout URL
+        	//.logoutUrl("/doLogout")
+        	// recommended: use POST as the action is to modify the state + POST can be used with CSRF
+        	.logoutRequestMatcher(new AntPathRequestMatcher("/doLogout", "GET"))
+        	// whether to clear user authentication when the user logs out
+        	//.clearAuthentication(true|false)
+        	// which cookies to delete
+        	//.deleteCookies(...)
+        	// whether to invalidate the session
+        	//.invalidateHttpSession(true|false)
+        	// URL to redirect in case of logout
+        	//.logoutSuccessUrl(url)
+        	// action to execute in case of logout
+        	//.logoutSuccessHandler(...)
+            
         .and()
-        .csrf().disable()
-        ;
+        .csrf().disable();
     } // @formatter:on
-
 }
