@@ -5,22 +5,18 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 @EnableWebSecurity
 public class LssSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    public LssSecurityConfig() {
-        super();
-    }
-
-    //
+	@Autowired
+    private UserDetailsService userDetailsService;
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception { // @formatter:off 
-        auth.
-            inMemoryAuthentication().
-            withUser("user").password("pass").
-            roles("USER");
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception { // @formatter:off
+    	// use the custom UserDetailsService implementation in order to work users from our DB
+        auth.userDetailsService(userDetailsService);
     } // @formatter:on
 
     @Override
